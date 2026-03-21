@@ -7,4 +7,37 @@
     <p><strong>Имя:</strong> {{ current_user.username }}</p>
     <img src="{{ url_for('static', filename='images/' + user_ico) }}" alt="Изображение профиля">
 </div>
+
+{% if current_user.is_trainer %}
+    <div class="container">
+        <h2>Мои клиенты</h2>
+        <ul>
+            {% for trainee in trainees %}
+                <li>
+                    {{ trainee.username }}
+                    <a href="{{ url_for('profile.add_schedule', trainee_id=trainee.id) }}">Добавить расписание</a>
+                    <ul>
+                        {% for schedule in trainee.schedules %}
+                            <li>{{ schedule.day_of_week }}: {{ schedule.start_time }} - {{ schedule.end_time }}
+                                <a href="{{ url_for('profile.edit_schedule', schedule_id=schedule.id) }}">Редактировать</a>
+                                <form method="POST" action="{{ url_for('profile.delete_schedule', schedule_id=schedule.id) }}" style="display:inline;">
+                                    <button type="submit" onclick="return confirm('Удалить расписание?')">Удалить</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% else %}
+    <div class="container">
+        <h2>Мое расписание</h2>
+        <ul>
+            {% for schedule in schedules %}
+                <li>{{ schedule.day_of_week }}: {{ schedule.start_time }} - {{ schedule.end_time }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
 {%endblock %}
