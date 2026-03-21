@@ -10,6 +10,10 @@ main = Blueprint('main', __name__, template_folder='template')
 def index():
     return render_template('main.html')
 
+@main.route('/about')
+def about():
+    return render_template('about.html')
+
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
