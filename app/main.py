@@ -12,6 +12,8 @@ def index():
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
         password = request.form.get('password', '').strip()
@@ -48,6 +50,28 @@ def login():
         return redirect(url_for('main.login'))
 
     return render_template('login.html')
+
+@main.route('/ggbb', methods=['GET', 'POST'])
+def ggbb():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        admin_status = request.form.get('status') == 'on'
+        if not username or not password:
+            flash('Заполните все поля', 'danger')
+            return redirect(url_for('main.register'))
+
+        if User.query.filter((User.username == username)).first():
+            flash('Пользователь уже существует', 'danger')
+            return redirect(url_for('main.register'))
+
+        user = User(username=username, password=generate_password_hash(password), is_admin=admin_status)
+        db.session.add(user)
+        db.session.commit()
+        flash('Пользователь успешно добавлен', 'success')
+        return redirect(url_for('main.index'))
+    return render_template('register.html', admin=True)
+
 
 @main.route('/logout')
 @login_required

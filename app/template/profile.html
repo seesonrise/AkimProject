@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+
+{% block body %}
+<div class="container">
+    <h1 class="title">Профиль пользователя</h1>
+    <p><strong>Имя:</strong> {{ current_user.username }}</p>
+    <img src="{{ url_for('static', filename='images/' + user_ico) }}" alt="Изображение профиля">
+</div>
+{%endblock %}
